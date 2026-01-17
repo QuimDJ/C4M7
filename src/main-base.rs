@@ -25,20 +25,4 @@ fn main() {
         "[2025-06-15 14:40:20] ERROR: Failed to fetch /api/orders/00000",
         "!!!!",
     ];
-
-    let re = Regex::new(
-        r"^\[(?<timestamp>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\]\s(?<category>INFO|ERROR|DEBUG|WARN):.+/api/(?<endpoint>\w+)/(?<id>\d+)"
-    )
-    .unwrap();
-    let entries: Vec<_> = server_logs
-        .into_iter()
-        .filter_map(|log| re.captures(log))
-        .map(|capture| LogEntry {
-            timestamp: capture["timestamp"].to_string(),
-            category: capture["category"].to_string(),
-            endpoint: capture["endpoint"].to_string(),
-            id: capture["id"].to_string(),
-        })
-        .collect();
-    println!("{entries:#?}");
 }

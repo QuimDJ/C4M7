@@ -26,19 +26,26 @@ fn main() {
         "!!!!",
     ];
 
-    let re = Regex::new(
-        r"^\[(?<timestamp>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\]\s(?<category>INFO|ERROR|DEBUG|WARN):.+/api/(?<endpoint>\w+)/(?<id>\d+)"
-    )
-    .unwrap();
-    let entries: Vec<_> = server_logs
-        .into_iter()
-        .filter_map(|log| re.captures(log))
-        .map(|capture| LogEntry {
-            timestamp: capture["timestamp"].to_string(),
-            category: capture["category"].to_string(),
-            endpoint: capture["endpoint"].to_string(),
-            id: capture["id"].to_string(),
-        })
-        .collect();
-    println!("{entries:#?}");
+    let re = Regex::new(r"^\[(?<timestamp>\d{4}-(0[1-9]|1[012])-\d{2}\s\d{2}:\d{2}:\d{2})\]\s(?<categoria>(INFO|ERROR|DEBUG|WARN)):.*/api/(?<endpoint>\w+)/(?<id>\d+).*").unwrap();
+    let mut events: Vec<LogEntry> = vec![];
+    for log in server_logs.into_iter() {
+        //println!("{}", log);
+        let captures = re.captures(log);
+        match &captures {
+            Some(_) => {
+                let captures = captures.unwrap();
+                if captures.len() > 2 {
+                    let elem = LogEntry {
+                        timestamp: captures["timestamp"].to_string(),
+                        category: captures["categoria"].to_string(),
+                        endpoint: captures["endpoint"].to_string(),
+                        id: captures["id"].to_string(),
+                    };
+                    events.insert(events.len(), elem);
+                }
+            }
+            None => (),
+        }
+    }
+    println!("{:#?}", events);
 }
