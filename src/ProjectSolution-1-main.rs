@@ -26,7 +26,7 @@ fn main() {
         "!!!!",
     ];
 
-    let re = Regex::new(r"^\[(?<timestamp>\d{4}-(0[1-9]|1[012])-\d{2}\s\d{2}:\d{2}:\d{2})\]\s(?<categoria>(INFO|ERROR|DEBUG|WARN)):.*/api/(?<endpoint>\w+)/(?<id>\d+).*").unwrap();
+    let re = Regex::new(r"^\[(?<timestamp>\d{4}-(0[1-9]|1[012])-\d{2}\s\d{2}:\d{2}:\d{2})\]\s(?<category>INFO|ERROR|DEBUG|WARN):.*/api/(?<endpoint>\w+)/(?<id>\d+).*").unwrap();
     let mut events: Vec<LogEntry> = vec![];
     for log in server_logs.into_iter() {
         //println!("{}", log);
@@ -37,7 +37,7 @@ fn main() {
                 if captures.len() > 2 {
                     let elem = LogEntry {
                         timestamp: captures["timestamp"].to_string(),
-                        category: captures["categoria"].to_string(),
+                        category: captures["category"].to_string(),
                         endpoint: captures["endpoint"].to_string(),
                         id: captures["id"].to_string(),
                     };
